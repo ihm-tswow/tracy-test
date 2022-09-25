@@ -1,0 +1,32 @@
+cmake_minimum_required(VERSION 3.11)
+project(my-tracy-test)
+Include(FetchContent)
+
+
+SET(TRACY_ON_DEMAND ON CACHE BOOL "" FORCE)
+SET(TRACY_NO_CALLSTACK ON CACHE BOOL "" FORCE)
+SET(TRACY_NO_SAMPLING ON CACHE BOOL "" FORCE)
+SET(TRACY_NO_CALLSTACK_INLINES ON CACHE BOOL "" FORCE)
+SET(TRACY_NO_SYSTEM_TRACING ON CACHE BOOL "" FORCE)
+SET(TRACY_CALLSTACK OFF CACHE BOOL "" FORCE)
+SET(TRACY_NO_CONTEXT_SWITCH ON CACHE BOOL "" FORCE)
+SET(TRACY_NO_VSYNC_CAPTURE ON CACHE BOOL "" FORCE)
+SET(TRACY_NO_FRAME_IMAGE ON CACHE BOOL "" FORCE)
+SET(TRACY_NO_CRASH_HANDLER ON CACHE BOOL "" FORCE)
+
+FetchContent_Declare (
+  tracy
+  GIT_REPOSITORY https://github.com/wolfpld/tracy.git
+  GIT_TAG 80f6a93da79af94fc4604e37439f5a75d5e7dfbd
+  GIT_SHALLOW TRUE
+  GIT_PROGRESS TRUE
+)
+FetchContent_MakeAvailable (tracy)
+target_compile_definitions(TracyClient
+  PRIVATE
+  TRACY_DATA_PORT=8084
+  TRACY_ON_DEMAND=1
+)
+
+add_executable(tracy-tester tracy-tester.cpp)
+target_link_libraries(tracy-tester PRIVATE TracyClient)
